@@ -18,8 +18,13 @@
   </head>
 
   <body>
-     <p class="notice"><%= notice %></p>
-      <p class="alert"><%= alert %></p>
+    <%= render partial: 'shared/navbar'%>
+    <p class="notice"><%= notice %></p>
+    <p class="alert"><%= alert %></p>
     <%= yield %>
+
+    <!-- Bootstrap JavaScript and Popper.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-QAu3D/Ww65JENXN3/PrwnLv1UkGIfsmJds+IJAg+of8YNf5tzonhK6oGwwjHkVZL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12p65zscHKpCIPaDTRnlbkzBiLIs1L9loEe74DQgaURa7WsF" crossorigin="anonymous"></script>
   </body>
 </html>
