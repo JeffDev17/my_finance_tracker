@@ -7,28 +7,36 @@
 
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- Home -->
                 <li class="nav-item">
                     <a class="nav-link active" href="<%= root_path %>">Home</a>
                 </li>
+                <!-- Accounts -->
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <%= link_to "My Account", accounts_path, class: "nav-link" %>
                 </li>
+                <!-- Transactions -->
+                <li class="nav-item">
+                    <%= link_to "Transactions", transactions_path, class: "nav-link" %>
+                </li>
+                <!-- Categories -->
+                <li class="nav-item">
+                    <%= link_to "Categories", categories_path, class: "nav-link" %>
+                </li>
+                
                 <!-- User Dropdown Menu -->
                 <% if user_signed_in? %>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Menu </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><%= link_to "Accounts", root_path, class: "dropdown-item" %></li>
                         <li><%= link_to "Edit Profile", edit_user_registration_path, class: "dropdown-item" %></li>
-                        <li>
-                          <%= button_to "Log out", destroy_user_session_path, method: :delete, class: "dropdown-item" %>
-                        </li>
+                        <li><%= button_to "Log out", destroy_user_session_path, method: :delete, class: "dropdown-item" %></li>
                     </ul>
                 </li>
                 <% end %>
             </ul>
 
-            <!-- User Email on the Far Right -->
+            <!-- User Username on the Far Right -->
             <% if user_signed_in? %>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
