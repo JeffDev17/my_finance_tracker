@@ -1,7 +1,7 @@
 <h1>Transaction Details</h1>
 
 <p><strong>Description:</strong> <%= @transaction.description %></p>
-<p><strong>Amount:</strong> <%= number_to_currency(@transaction.amount) %></p>
+<p><strong>Amount:</strong> <%= br_currency(@transaction.amount) %></p>
 <p><strong>Category:</strong> <%= @transaction.category.name %></p>
 <p><strong>Date:</strong> <%= @transaction.created_at.strftime('%B %d, %Y') %></p>
 

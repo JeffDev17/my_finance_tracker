@@ -1,11 +1,10 @@
-<!-- app/views/accounts/show.html.erb -->
 <div class="container mt-4">
   <h1>Your Account</h1>
   <div class="card mb-4">
     <div class="card-body">
       <h2 class="card-title">Balance</h2>
       <h3 class="card-text text-<%= @balance.to_f >= 0 ? 'success' : 'danger' %>">
-        <%= number_to_currency(@balance) %>
+        <%= br_currency(@balance) %>
       </h3>
     </div>
   </div>
@@ -15,7 +14,7 @@
       <div class="card mb-4">
         <div class="card-body">
           <h2 class="card-title">Total Income</h2>
-          <p class="card-text text-success"><%= number_to_currency(@total_income) %></p>
+          <p class="card-text text-success"><%= br_currency(@total_income) %></p>
         </div>
       </div>
     </div>
@@ -23,7 +22,7 @@
       <div class="card mb-4">
         <div class="card-body">
           <h2 class="card-title">Total Expenses</h2>
-          <p class="card-text text-danger"><%= number_to_currency(@total_expenses) %></p>
+          <p class="card-text text-danger"><%= br_currency(@total_expenses) %></p>
         </div>
       </div>
     </div>
@@ -49,7 +48,7 @@
                 <td><%= transaction.description %></td>
                 <td><%= transaction.category&.name %></td>
                 <td class="<%= transaction.category&.category_type == 'income' ? 'text-success' : 'text-danger' %>">
-                  <%= number_to_currency(transaction.amount) %>
+                  <%= br_currency(transaction.amount) %>
                 </td>
               </tr>
             <% end %>
