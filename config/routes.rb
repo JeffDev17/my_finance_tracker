@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   resources :accounts
   resources :categories
   resource :account, only: [:show]
-
+  
   # Defines the root path route ("/")
   root "home#index"
 
