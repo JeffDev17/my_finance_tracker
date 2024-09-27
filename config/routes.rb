@@ -2,14 +2,19 @@ Rails.application.routes.draw do
   get "home/index"
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   devise_for :users
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
- 
-  resources :transactions
+
+  # Updated resource routes for transactions
+  resources :transactions do
+    collection do
+      get :monthly # This route doesn't need an ID
+    end
+  end
+
   resources :accounts
   resources :categories
   resource :account, only: [:show]
-  
-  # Defines the root path route ("/")
+
+  # Root path route
   root "home#index"
 
 

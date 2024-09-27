@@ -1,32 +1,46 @@
 class TransactionsController < ApplicationController
-  before_action :set_transaction, only: [:show, :edit, :update, :destroy]
-  before_action :set_categories, only: [:new, :create, :edit, :update]
-
+  before_action :set_transaction
+  before_action :set_categories, only: [:new, :edit]
+  #skip_before_action :set_transaction, only: [:monthly]
+  
   def index
-    # Shows current user's transactions, ordered by date with categories
+    # mostra os transactions do user em order de tempo
     @transactions = current_user.account.transactions.includes(:category).order(created_at: :desc)
   end
 
   def show
-    # Uses the @transaction set by the before_action
+    # Usa o @transaction do before_action
   end
 
   def new
-    # Initializes a new transaction for the current user
+    # inicia uma nova transacao p usuario atual
     @transaction = Transaction.new(account: current_user.account)
   end
 
   def create
-    @transaction = current_user.account.transactions.new(transaction_params)
-    if @transaction.save
-      redirect_to @transaction, notice: 'Transaction was successfully created.'
-    else
-      render :new
+    total_amount = transaction_params[:amount].to_f
+    num_installments = transaction_params[:installment].present? ? transaction_params[:installment].to_i : 1
+    #if ternario
+    installment_amount = total_amount / num_installments
+  
+    # Cria uma transaction para cada parcela
+    num_installments.times do |number|
+      installment_number = number + 1 #aqui o number começa em 0
+      installment_date = Date.today + installment_number.months 
+  
+      current_user.account.transactions.create(
+        description: "#{transaction_params[:description]} #{installment_number}/#{num_installments}",
+        amount: installment_amount,
+        category_id: transaction_params[:category_id],
+        created_at: installment_date
+      )
     end
+  
+    redirect_to transactions_path, notice: 'Transactions were successfully created.'
   end
 
   def edit
-    # Uses the @transaction set by the before_action
+    # Usa o @transaction do before_action
   end
 
   def update
@@ -43,20 +57,24 @@ class TransactionsController < ApplicationController
     redirect_to transactions_path
   end
 
+  def monthly
+    # Pega as transacoes do user, lista e agrupa por tabela
+    @monthly_transactions = current_user.account.transactions.order(created_at: :desc).group_by { |t| t.created_at.beginning_of_month }
+  end
+
   private
 
   def set_transaction
-    # Loads the specific transaction for the current user
-    @transaction = current_user.account.transactions.find(params[:id])
+    @transaction = current_user.account.transactions.find(params[:id]) if params[:id].present?
+
   end
 
   def set_categories
-    # Loads all categories for the transactions
     @categories = Category.all
   end
 
   def transaction_params
-    # Permits necessary parameters for creating/updating a transaction
-    params.require(:transaction).permit(:description, :amount, :category_id)
+    # pega os parametros p transaction em tratamento
+    params.require(:transaction).permit(:description, :amount, :category_id, :installment)
   end
 end
