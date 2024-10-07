@@ -15,7 +15,7 @@
     <tbody>
       <% transactions.each do |transaction| %>
         <tr>
-          <td><%= transaction.created_at.strftime('%B %d, %Y') %></td>
+          <td><%= transaction.expiration %></td>
           <td><%= transaction.description %></td>
           <td><%= transaction.category.name %></td>
           <td><%= br_currency(transaction.amount) %></td>
