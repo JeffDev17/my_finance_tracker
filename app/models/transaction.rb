@@ -22,6 +22,8 @@ class Transaction < ApplicationRecord
     end
   end
 
+
+
   def create_subsequent_installments
     if can_create_installments?
       (2..installment).each do |number|

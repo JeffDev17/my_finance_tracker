@@ -17,6 +17,7 @@
       <tr>
         <td><%= transaction.description %></td>
         <td><%= br_currency(transaction.amount) %></td>
+        <td><%= transaction.installment_number %></td>
         <td><%= transaction.category.name %></td>
         <td><%= transaction.created_at.strftime('%B %d, %Y') %></td>
         <td>
