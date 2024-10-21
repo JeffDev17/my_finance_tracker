@@ -1,0 +1,177 @@
+/* Variables */
+$color-success: #16a34a;
+$color-danger: #dc2626;
+$color-slate: #334155;
+$color-slate-light: #475569;
+$color-gray-border: #e2e8f0;
+$color-gray-bg: #f8fafc;
+$color-gray-hover: #f1f5f9;
+
+/* Mixins */
+@mixin card-shadow {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@mixin hover-transition {
+  transition: all 0.2s ease;
+}
+
+/* Layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Typography */
+h1, h2, h3 {
+  color: $color-slate;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Common Card Styles */
+.card {
+  background: white;
+  border-radius: 8px;
+  border: none;
+  @include card-shadow;
+  @include hover-transition;
+  margin-bottom: 1.5rem;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .card-title {
+    color: $color-slate-light;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Table Styles */
+.table-container {
+  @extend .container;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1.25rem 0;
+
+  th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid $color-gray-border;
+  }
+
+  th {
+    background-color: $color-gray-bg;
+    color: $color-slate;
+    font-weight: 600;
+    border-bottom: 2px solid $color-gray-border;
+  }
+
+  tbody tr {
+    @include hover-transition;
+
+    &:hover {
+      background-color: $color-gray-hover;
+    }
+
+    &:nth-child(even) {
+      background-color: $color-gray-bg;
+    }
+  }
+}
+
+/* Transaction Types */
+.expense {
+  color: $color-danger;
+  font-weight: 500;
+}
+
+.income {
+  color: $color-success;
+  font-weight: 500;
+}
+
+/* Total Row Styling */
+.total-highlight {
+  background-color: $color-slate !important;
+  color: white;
+  font-weight: 600;
+
+  td {
+    padding: 1rem;
+  }
+
+  &[data-total-type="positive"] strong {
+    color: $color-success;
+  }
+
+  &[data-total-type="negative"] strong {
+    color: $color-danger;
+  }
+}
+
+/* Account Dashboard Specific */
+.balance-display {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.totals-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -0.75rem;
+
+  .total-card {
+    flex: 0 0 calc(50% - 1.5rem);
+    margin: 0.75rem;
+  }
+}
+
+/* Button Styles */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: none;
+  @include hover-transition;
+
+  &-primary {
+    background-color: $color-slate;
+    color: white;
+
+    &:hover {
+      background-color: darken($color-slate, 10%);
+    }
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .totals-row .total-card {
+    flex: 0 0 100%;
+  }
+
+  .balance-display {
+    font-size: 2rem;
+  }
+
+  .table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

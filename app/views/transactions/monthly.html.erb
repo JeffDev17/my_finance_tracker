@@ -1,26 +1,49 @@
-<h1>Monthly Transactions</h1>
+<div class="table-container">
+  <h1>Monthly Transactions</h1>
 
-<% @monthly_transactions.each do |month, transactions| %>
-  <h2><%= month.strftime('%B %Y') %></h2> 
-  
-  <table class="table">
-    <thead>
+  <% @monthly_transactions.sort.each do |month, transactions| %>
+    <h2><%= month.strftime('%B %Y') %></h2>
+
+    <table class="table">
+      <thead>
       <tr>
         <th>Date</th>
         <th>Description</th>
         <th>Category</th>
+        <th>Type</th>
         <th>Amount</th>
       </tr>
-    </thead>
-    <tbody>
+      </thead>
+      <tbody>
+      <% total_for_month = 0 %>
       <% transactions.each do |transaction| %>
         <tr>
-          <td><%= transaction.expiration %></td>
-          <td><%= transaction.description %></td>
+          <td><%= transaction.expiration.strftime('%d/%m/%Y') %></td>
+          <td><%= installment_description(transaction) %></td>
           <td><%= transaction.category.name %></td>
-          <td><%= br_currency(transaction.amount) %></td>
+          <td class="<%= transaction.category.category_type == 'expense' ? 'expense' : 'income' %>">
+            <%= transaction.category.category_type.capitalize %>
+          </td>
+          <td class="<%= transaction.category.category_type == 'expense' ? 'expense' : 'income' %>">
+            <%= br_currency(transaction.amount) %>
+          </td>
         </tr>
+        <%
+          # Add or subtract based on category_type string value
+          if transaction.category.category_type == 'expense'
+            total_for_month -= transaction.amount
+          else
+            total_for_month += transaction.amount
+          end
+        %>
       <% end %>
-    </tbody>
-  </table>
-<% end %>
+      </tbody>
+      <tfoot>
+      <tr class="total-highlight" data-total-type="<%= total_for_month >= 0 ? 'positive' : 'negative' %>">
+        <td colspan="4"><strong>Total for <%= month.strftime('%B %Y') %></strong></td>
+        <td><strong><%= br_currency(total_for_month) %></strong></td>
+      </tr>
+      </tfoot>
+    </table>
+  <% end %>
+</div>
