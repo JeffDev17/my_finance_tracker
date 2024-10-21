@@ -19,10 +19,9 @@ class Transaction < ApplicationRecord
     unless installment_number.present?
       self.installment_number = 1
       self.amount = self.amount / self.installment
+      #self.description = "#{description} #1/#{installment}"
     end
   end
-
-
 
   def create_subsequent_installments
     if can_create_installments?
@@ -35,6 +34,7 @@ class Transaction < ApplicationRecord
           expiration: expiration + (number - 1).months,
           category_id: category_id,
           description: description
+          #description: description.gsub(/#\d+\//, "##{number}/")
         }
         Transaction.create!(params)
       end

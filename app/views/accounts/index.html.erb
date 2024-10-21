@@ -1,28 +1,29 @@
-<div class="container mt-4">
+<div class="container">
   <h1>Your Account</h1>
-  <div class="card mb-4">
+
+  <div class="card">
     <div class="card-body">
-      <h2 class="card-title">Balance</h2>
-      <h3 class="card-text text-<%= @balance.to_f >= 0 ? 'success' : 'danger' %>">
+      <h2 class="card-title">Current Balance</h2>
+      <div class="balance-display <%= @balance.to_f >= 0 ? 'income' : 'expense' %>">
         <%= br_currency(@balance) %>
-      </h3>
+      </div>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card mb-4">
+  <div class="totals-row">
+    <div class="total-card">
+      <div class="card">
         <div class="card-body">
           <h2 class="card-title">Total Income</h2>
-          <p class="card-text text-success"><%= br_currency(@total_income) %></p>
+          <div class="balance-display income"><%= br_currency(@total_income) %></div>
         </div>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="card mb-4">
+    <div class="total-card">
+      <div class="card">
         <div class="card-body">
           <h2 class="card-title">Total Expenses</h2>
-          <p class="card-text text-danger"><%= br_currency(@total_expenses) %></p>
+          <div class="balance-display expense"><%= br_currency(@total_expenses) %></div>
         </div>
       </div>
     </div>
@@ -33,26 +34,6 @@
       <h2 class="card-title">Recent Transactions</h2>
       <% if @recent_transactions.any? %>
         <table class="table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Description</th>
-              <th>Category</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @recent_transactions.each do |transaction| %>
-              <tr>
-                <td><%= transaction.created_at.strftime('%B %d, %Y') %></td>
-                <td><%= transaction.description %></td>
-                <td><%= transaction.category&.name %></td>
-                <td class="<%= transaction.category&.category_type == 'income' ? 'text-success' : 'text-danger' %>">
-                  <%= br_currency(transaction.amount) %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
         </table>
         <%= link_to 'View All Transactions', transactions_path, class: 'btn btn-primary' %>
       <% else %>

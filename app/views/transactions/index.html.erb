@@ -1,31 +1,35 @@
-<h1>Transactions</h1>
+<div class="table-container">
+  <h1>Transactions</h1>
 
-<%= link_to 'New Transaction', new_transaction_path, class: 'btn btn-primary mb-3' %>
+  <%= link_to 'New Transaction', new_transaction_path, class: 'btn btn-primary mb-3' %>
 
-<table class="table">
-  <thead>
+  <table class="table">
+    <caption>Transactions Overview</caption>
+    <thead>
     <tr>
       <th>Description</th>
-      <th>Amount</th>
+      <th>Valor</th>
+      <th>Parcela No</th>
       <th>Category</th>
-      <th>Date</th>
+      <th>Due date</th>
       <th>Actions</th>
     </tr>
-  </thead>
-  <tbody>
+    </thead>
+    <tbody>
     <% @transactions.each do |transaction| %>
       <tr>
-        <td><%= transaction.description %></td>
+        <td><%= installment_description(transaction) %></td>
         <td><%= br_currency(transaction.amount) %></td>
         <td><%= transaction.installment_number %></td>
         <td><%= transaction.category.name %></td>
-        <td><%= transaction.created_at.strftime('%B %d, %Y') %></td>
-        <td>
+        <td><%= transaction.expiration.strftime("%d-%m-%Y") %></td>
+        <td class="action-buttons">
           <%= link_to 'Show', transaction, class: 'btn btn-sm btn-info' %>
           <%= link_to 'Edit', edit_transaction_path(transaction), class: 'btn btn-sm btn-warning' %>
           <%= button_to 'Delete', transaction_path(transaction), method: :delete, class: 'btn btn-sm btn-danger', form: { style: 'display:inline-block;' }, data: { turbo_confirm: 'Are you sure?' } %>
         </td>
       </tr>
     <% end %>
-  </tbody>
-</table>
+    </tbody>
+  </table>
+</div>

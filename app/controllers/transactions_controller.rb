@@ -8,7 +8,6 @@ class TransactionsController < ApplicationController
   end
 
   def show
-    # Usa o @transaction do before_action
   end
 
   def new
@@ -45,7 +44,7 @@ class TransactionsController < ApplicationController
 
   def monthly
     # Pega as transacoes do user, lista e agrupa por tabela
-    @monthly_transactions = current_user.account.transactions.order(created_at: :desc).group_by { |t| t.created_at.beginning_of_month }
+    @monthly_transactions = current_user.account.transactions.all.group_by { |t| t.expiration.beginning_of_month }
   end
 
   private
