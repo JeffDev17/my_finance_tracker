@@ -3,10 +3,10 @@ Rails.application.routes.draw do
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   devise_for :users
 
-  # Updated resource routes for transactions
   resources :transactions do
     collection do
-      get :monthly # This route doesn't need an ID
+      get :monthly
+      get :recurring
     end
   end
 

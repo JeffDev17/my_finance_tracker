@@ -4,7 +4,12 @@ module ApplicationHelper
   end
 
   def installment_description(transaction)
+    if transaction.installment_number != 0
     "#{transaction.description} #{transaction.installment_number} / #{transaction.installment}"
+    else
+      "#{transaction.description}"
+    end
+
   end
 
 end

@@ -1,28 +1,38 @@
-<%= form_with model: @transaction, local: true do |form| %>
-  <div class="form-group">
-    <%= form.label :description %>
-    <%= form.text_field :description, class: 'form-control' %>
-  </div>
+  <%= form_with model: @transaction, local: false do |form| %>
+    <div class="form-group">
+      <%= form.label :description %>
+      <%= form.text_field :description, class: 'form-control' %>
+    </div>
 
-  <div class="form-group">
-    <%= form.label :amount %>
-    <%= form.number_field :amount, class: 'form-control', step: 'any' %>
-  </div>
+    <div class="form-group">
+      <%= form.label :amount %>
+      <%= form.number_field :amount, class: 'form-control', step: 'any' %>
+    </div>
 
-  <div class="form-group">
-    <%= form.label :category_id %>
-    <%= form.collection_select :category_id, Category.all, :id, :name, { prompt: "Select a category" }, class: 'form-control' %>
-  </div>
-  
-  <div class="form-group">
-    <%= form.label :installment %>
-    <%= form.number_field :installment, class: 'form-control', min: 1 %>
-  </div>
-  
-  <div class="form-group">
-    <%= form.label :expiration %>
-    <%= form.date_field :expiration, class: 'form-control' %>
-  </div>
+    <div class="form-group">
+      <%= form.label :category_id %>
+      <%= form.collection_select :category_id, Category.all, :id, :name, { prompt: "Select a category" }, class: 'form-control' %>
+    </div>
 
-  <%= form.submit class: 'btn btn-primary' %>
-<% end %>
+    <div class="form-group">
+      <%= form.label :installment, "Number of Installments (if applicable)" %>
+      <%= form.number_field :installment, class: 'form-control', min: 1, placeholder: "Enter number of installments" %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :recurring, "Is this a recurring transaction?" %>
+      <%= form.select :recurring, options_for_select([['No', 'no'], ['Daily', 'daily'], ['Weekly', 'weekly'], ['Monthly', 'monthly'], ['Yearly', 'yearly']]), {}, class: 'form-control' %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :expiration %>
+      <%= form.date_field :expiration, class: 'form-control', value: Date.today.strftime('%Y-%m-%d') %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :issue_date %>
+      <%= form.date_field :issue_date, class: 'form-control', value: Date.today.strftime('%Y-%m-%d') %>
+    </div>
+
+    <%= form.submit class: 'btn btn-primary' %>
+  <% end %>
