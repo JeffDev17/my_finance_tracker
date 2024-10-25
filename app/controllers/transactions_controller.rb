@@ -1,9 +1,7 @@
 class TransactionsController < ApplicationController
   before_action :get_transaction
-  #skip_before_action :set_transaction, only: [:monthly]
-  
+
   def index
-    # mostra os transactions do user em order de tempo
     @transactions = current_user.account.transactions.includes(:category).order(created_at: :desc)
   end
 
@@ -11,21 +9,25 @@ class TransactionsController < ApplicationController
   end
 
   def new
-    # inicia uma nova transacao p usuario atual
   end
 
   def create
-    @transaction = Transaction.create!(transaction_params)
-    if @transaction
-      redirect_to transactions_path, notice: 'Transactions were successfully created.'
+    @transaction = Transaction.new(transaction_params)
+
+    if @transaction.save
+      #cria recorrente só se nao for uma child
+      unless @transaction.parent_transaction_id.present?
+        recurring = Recurring.new
+        recurring.create_recurring_transaction(@transaction)
+      end
+
+      redirect_to transactions_path, notice: 'Transaction was successfully created.'
     else
       render :new
     end
-
   end
 
   def edit
-    # Usa o @transaction do before_action
   end
 
   def update
@@ -37,26 +39,40 @@ class TransactionsController < ApplicationController
   end
 
   def destroy
-    @transaction.destroy
-    flash[:success] = "Transaction was successfully deleted."
+    if @transaction.recurring != 'no'
+      @transaction.destroy_recurring_chain
+      flash[:success] = "Recurring transaction and its future transactions were successfully deleted."
+    else
+      @transaction.destroy
+      flash[:success] = "Transaction was successfully deleted."
+    end
     redirect_to transactions_path
   end
 
   def monthly
-    # Pega as transacoes do user, lista e agrupa por tabela
     @monthly_transactions = current_user.account.transactions.all.group_by { |t| t.expiration.beginning_of_month }
+  end
+
+  def recurring
+    @recurring_transactions = current_user.account.transactions.where.not(recurring: 'no').where(parent_transaction_id: nil)
   end
 
   private
 
   def transaction_params
-    # pega os parametros p transaction em tratamento
-    params.require(:transaction).permit(:description, :amount, :category_id, :installment, :installment_number, :expiration).merge(account: current_user.account)
+    params.require(:transaction).permit(
+      :description,
+      :amount,
+      :category_id,
+      :installment,
+      :installment_number,
+      :recurring,
+      :expiration,
+      :issue_date
+    ).merge(account: current_user.account)
   end
 
   def get_transaction
-    @transaction = Transaction.find(params[:id]) rescue Transaction.new
-    #busca id da transaction e obviamente se nao existir == criando transaction 
+    @transaction = Transaction.find_by(id: params[:id]) || Transaction.new
   end
-
 end

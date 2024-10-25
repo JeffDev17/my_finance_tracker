@@ -1,0 +1,34 @@
+<div class="table-container">
+  <h2>Recurring Transactions</h2>
+
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Description</th>
+      <th>Amount</th>
+      <th>Category</th>
+      <th>Frequency</th>
+      <th>Next Occurrence</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @recurring_transactions.each do |transaction| %>
+      <tr>
+        <td><%= transaction.description %></td>
+        <td><%= number_to_currency(transaction.amount) %></td>
+        <td><%= transaction.category.name %></td>
+        <td><%= transaction.recurring.titleize %></td>
+        <td>
+          <% next_occurrence = transaction.children.where('expiration > ?', Time.current).order(expiration: :asc).first %>
+          <%= next_occurrence&.expiration&.strftime('%B %d, %Y') || 'No future occurrences' %>
+        </td>
+        <td>
+          <%= button_to 'Stop Recurring', transaction_path(transaction), method: :delete, data: { confirm: 'This will delete all future occurrences of this recurring transaction. Are you sure?' }, class: 'btn btn-danger btn-sm' %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
+

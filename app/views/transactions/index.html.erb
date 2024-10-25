@@ -9,6 +9,7 @@
     <tr>
       <th>Description</th>
       <th>Valor</th>
+      <th>Recurring</th>
       <th>Parcela No</th>
       <th>Category</th>
       <th>Due date</th>
@@ -18,8 +19,14 @@
     <tbody>
     <% @transactions.each do |transaction| %>
       <tr>
-        <td><%= installment_description(transaction) %></td>
+        <td><%= if transaction.parent_transaction.present?
+                  transaction.description = transaction.description
+                else
+                    installment_description(transaction)
+                end
+        %></td>
         <td><%= br_currency(transaction.amount) %></td>
+        <td><%= transaction.recurring.capitalize %></td>
         <td><%= transaction.installment_number %></td>
         <td><%= transaction.category.name %></td>
         <td><%= transaction.expiration.strftime("%d-%m-%Y") %></td>

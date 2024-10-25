@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_27_194008) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_25_155931) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_27_194008) do
     t.integer "installment"
     t.integer "installment_number"
     t.date "expiration"
+    t.string "recurring"
+    t.date "issue_date"
+    t.integer "parent_transaction_id"
     t.index ["account_id"], name: "index_transactions_on_account_id"
     t.index ["category_id"], name: "index_transactions_on_category_id"
     t.index ["expiration"], name: "index_transactions_on_expiration"
@@ -61,4 +64,5 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_27_194008) do
   add_foreign_key "accounts", "users"
   add_foreign_key "transactions", "accounts"
   add_foreign_key "transactions", "categories"
+  add_foreign_key "transactions", "transactions", column: "parent_transaction_id", on_delete: :cascade
 end

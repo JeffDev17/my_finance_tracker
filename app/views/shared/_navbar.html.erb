@@ -23,6 +23,10 @@
                 <li class="nav-item">
                     <%= link_to "Months", monthly_transactions_path, class: "nav-link" %>
                 </li>
+                <li class="nav-item">
+                  <%= link_to "Recurring", recurring_transactions_path, class: "nav-link" %>
+                </li>
+
                 
                 <!-- User Dropdown Menu -->
                 <% if user_signed_in? %>

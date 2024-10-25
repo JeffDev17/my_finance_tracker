@@ -11,6 +11,7 @@
         <th>Description</th>
         <th>Category</th>
         <th>Type</th>
+        <th>Recurring</th> <!-- New column for Recurring -->
         <th>Amount</th>
       </tr>
       </thead>
@@ -24,12 +25,14 @@
           <td class="<%= transaction.category.category_type == 'expense' ? 'expense' : 'income' %>">
             <%= transaction.category.category_type.capitalize %>
           </td>
+          <td>
+            <%= transaction.recurring.capitalize %>
+          </td>
           <td class="<%= transaction.category.category_type == 'expense' ? 'expense' : 'income' %>">
             <%= br_currency(transaction.amount) %>
           </td>
         </tr>
         <%
-          # Add or subtract based on category_type string value
           if transaction.category.category_type == 'expense'
             total_for_month -= transaction.amount
           else
@@ -40,7 +43,7 @@
       </tbody>
       <tfoot>
       <tr class="total-highlight" data-total-type="<%= total_for_month >= 0 ? 'positive' : 'negative' %>">
-        <td colspan="4"><strong>Total for <%= month.strftime('%B %Y') %></strong></td>
+        <td colspan="5"><strong>Total for <%= month.strftime('%B %Y') %></strong></td>
         <td><strong><%= br_currency(total_for_month) %></strong></td>
       </tr>
       </tfoot>
