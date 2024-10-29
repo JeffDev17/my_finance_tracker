@@ -7,6 +7,8 @@ Rails.application.routes.draw do
     collection do
       get :monthly
       get :recurring
+      get 'export_xml'
+      get 'export_excel'
     end
   end
 
