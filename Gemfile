@@ -62,3 +62,7 @@ gem "devise", "~> 4.9"
 
 gem "rails_admin", "~> 3.2"
 gem "sassc-rails"
+gem 'nokogiri'
+
+gem 'caxlsx'
+gem 'caxlsx_rails'

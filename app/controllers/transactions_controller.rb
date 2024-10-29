@@ -6,11 +6,13 @@ class TransactionsController < ApplicationController
   end
 
   def show
+    @transactions = Transaction.find(params[:id])
   end
 
   def new
   end
 
+  # noinspection RubyArgCount
   def create
     @transaction = Transaction.new(transaction_params)
 
@@ -55,6 +57,20 @@ class TransactionsController < ApplicationController
 
   def recurring
     @recurring_transactions = current_user.account.transactions.where.not(recurring: 'no').where(parent_transaction_id: nil)
+  end
+
+  def export_xml
+    transactions = current_user.account.transactions.includes(:category)
+    xml_data = TransactionExport.export_to_xml(transactions, current_user)
+    send_data xml_data, filename: "transactions_#{Time.current.strftime('%Y%m%d')}.xml", type: 'application/xml'
+    #send data envia dados
+  end
+
+  def export_excel
+    transactions = current_user.account.transactions.includes(:category)
+    file_path = TransactionExport.export_to_excel(transactions, current_user)
+    send_file file_path, type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', disposition: 'attachment'
+    #send file envia o arquivo já salvo
   end
 
   private

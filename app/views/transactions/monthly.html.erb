@@ -20,7 +20,12 @@
       <% transactions.each do |transaction| %>
         <tr>
           <td><%= transaction.expiration.strftime('%d/%m/%Y') %></td>
-          <td><%= installment_description(transaction) %></td>
+          <td><%= if transaction.parent_transaction.present?
+                    transaction.description = transaction.description
+                  else
+                    installment_description(transaction)
+                  end
+          %></td>
           <td><%= transaction.category.name %></td>
           <td class="<%= transaction.category.category_type == 'expense' ? 'expense' : 'income' %>">
             <%= transaction.category.category_type.capitalize %>

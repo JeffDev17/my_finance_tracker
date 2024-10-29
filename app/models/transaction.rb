@@ -15,10 +15,10 @@ class Transaction < ApplicationRecord
 
   def destroy_recurring_chain
     if parent_transaction_id.present?
-      #se ela tiver um parent, procura mais transaction com mesmo parent e data futura
+      #essa transaçao tem pai? Se sim, procura mais transaction com mesmo parent e data futura para deletar
       Transaction.where(parent_transaction_id: parent_transaction_id).where('expiration >= ?', expiration).destroy_all
     else
-      #se for parent, destroi ela e as children
+      #Se ela nao tiver pai, significa que é uma transaction PAI e dai destroi todos os filhos e ela
       children.destroy_all
       destroy
     end

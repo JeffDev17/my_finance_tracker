@@ -9,7 +9,15 @@ module ApplicationHelper
     else
       "#{transaction.description}"
     end
-
   end
+    def xml_column_headers
+      {
+        'amount' => 'Amount',
+        'category' => 'Category',
+        'description' => 'Description',
+        'expiration' => 'Expiration Date',
+        'issue_date' => 'Issue Date'
+      }
+    end
 
 end
