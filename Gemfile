@@ -66,3 +66,4 @@ gem 'nokogiri'
 
 gem 'caxlsx'
 gem 'caxlsx_rails'
+gem 'roo'

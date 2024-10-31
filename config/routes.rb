@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       get :recurring
       get 'export_xml'
       get 'export_excel'
+      post :import_excel
     end
   end
 

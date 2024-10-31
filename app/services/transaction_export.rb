@@ -1,4 +1,3 @@
-# app/services/transaction_export.rb
 class TransactionExport
   def self.export_to_xml(transactions, user)
     builder = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
@@ -8,6 +7,8 @@ class TransactionExport
             xml.description transaction.description
             xml.category transaction.category.name
             xml.amount transaction.amount
+            xml.installment transaction.installment_number
+            xml.recurring transaction.recurring
             xml.expiration_date transaction.expiration&.strftime('%d/%m/%Y')
             xml.issue_date transaction.issue_date&.strftime('%d/%m/%Y')
           end
@@ -21,13 +22,16 @@ class TransactionExport
   def self.export_to_excel(transactions, user)
     package = Axlsx::Package.new do |table|
       table.workbook.add_worksheet(name: "Transactions") do |sheet|
-        sheet.add_row ["Description", "Category", "Amount", "Expiration Date", "Issue Date", "User"]
+        sheet.add_row ["Description", "Category", "Amount", "Installment", "Recurring", "Account", "Expiration Date", "Issue Date", "User"]
 
         transactions.each do |transaction|
           sheet.add_row [
                           transaction.description,
                           transaction.category.name,
                           transaction.amount,
+                          transaction.installment_number,
+                          transaction.recurring,
+                          user.account.name,
                           format_date(transaction.expiration),
                           format_date(transaction.issue_date),
                           user.email
@@ -41,7 +45,6 @@ class TransactionExport
 
     file_path
   end
-
 
   private
 

@@ -3,6 +3,13 @@
 
   <%= link_to 'New Transaction', new_transaction_path, class: 'btn btn-primary mb-3' %>
 
+  <%= form_with url: import_excel_transactions_path, method: :post, local: true, multipart: true, class: "d-inline-block" do |form| %>
+    <div class="form-group mb-3">
+      <%= form.file_field :file, class: 'form-control-file' %>
+    </div>
+    <%= form.submit "Importar Excel", class: "btn btn-secondary" %>
+  <% end %>
+
   <table class="table">
     <caption>Transactions Overview</caption>
     <thead>
@@ -20,13 +27,12 @@
     <% @transactions.each do |transaction| %>
       <tr>
         <td><%= if transaction.parent_transaction.present?
-                  transaction.description = transaction.description
+                  transaction.description
                 else
-                    installment_description(transaction)
-                end
-        %></td>
+                  installment_description(transaction)
+                end %></td>
         <td><%= br_currency(transaction.amount) %></td>
-        <td><%= transaction.recurring.capitalize %></td>
+        <td><%= transaction.recurring ? transaction.recurring.capitalize : 'não informado' %></td>
         <td><%= transaction.installment_number %></td>
         <td><%= transaction.category.name %></td>
         <td><%= transaction.expiration.strftime("%d-%m-%Y") %></td>

@@ -73,6 +73,16 @@ class TransactionsController < ApplicationController
     #send file envia o arquivo já salvo
   end
 
+  def import_excel
+    file = params[:file]
+    if file.present?
+      TransactionImport.import_from_excel(file.path, current_user)
+      redirect_to transactions_path, notice: 'Importação concluída com sucesso!'
+    else
+      redirect_to transactions_path, alert: 'Por favor, selecione um arquivo para importar.'
+    end
+  end
+
   private
 
   def transaction_params
