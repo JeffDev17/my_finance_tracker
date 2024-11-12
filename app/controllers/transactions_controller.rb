@@ -12,17 +12,11 @@ class TransactionsController < ApplicationController
   def new
   end
 
-  # noinspection RubyArgCount
   def create
     @transaction = Transaction.new(transaction_params)
 
     if @transaction.save
-      #cria recorrente só se nao for uma child
-      unless @transaction.parent_transaction_id.present?
-        recurring = Recurring.new
-        recurring.create_recurring_transaction(@transaction)
-      end
-
+      #removi a logica daqui pq ela foi toda para o recurring
       redirect_to transactions_path, notice: 'Transaction was successfully created.'
     else
       render :new
@@ -52,10 +46,11 @@ class TransactionsController < ApplicationController
   end
 
   def monthly
-    @monthly_transactions = current_user.account.transactions.all.group_by { |t| t.expiration.beginning_of_month }
+    @monthly_transactions = current_user.account.transactions.all.group_by { |t| (t.expiration || Date.today).beginning_of_month }
   end
 
   def recurring
+    Recurring.generate_recurring_transactions
     @recurring_transactions = current_user.account.transactions.where.not(recurring: 'no').where(parent_transaction_id: nil)
   end
 
@@ -71,6 +66,28 @@ class TransactionsController < ApplicationController
     file_path = TransactionExport.export_to_excel(transactions, current_user)
     send_file file_path, type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', disposition: 'attachment'
     #send file envia o arquivo já salvo
+  end
+
+  def import_excel
+    file = params[:file]
+    if file.present?
+      TransactionImport.import_from_excel(file.path, current_user)
+      redirect_to transactions_path, notice: 'Importação concluída com sucesso!'
+    else
+      redirect_to transactions_path, alert: 'Por favor, selecione um arquivo para importar.'
+    end
+  end
+
+  def stop_recurring
+    transaction = Transaction.find(params[:id])
+    transaction.stop_recurring_chain
+
+    redirect_to transactions_path, notice: 'Recurring transactions stopped successfully.'
+  end
+  def destroy_all
+    Transaction.delete_all
+    redirect_to transactions_path, notice: 'Todas as transações foram deletadas com sucesso.'
+
   end
 
   private

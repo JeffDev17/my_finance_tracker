@@ -9,7 +9,14 @@ Rails.application.routes.draw do
       get :recurring
       get 'export_xml'
       get 'export_excel'
+      post :import_excel
+      delete :destroy_all
     end
+
+    member do
+      patch :stop_recurring #patch pq nao to criando e nem deletando nada
+    end
+
   end
 
   resources :accounts

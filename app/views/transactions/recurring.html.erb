@@ -14,21 +14,24 @@
     </thead>
     <tbody>
     <% @recurring_transactions.each do |transaction| %>
+      <% next_occurrence = transaction.children
+                                      .where('expiration > ?', Time.current)
+                                      .order(expiration: :asc)
+                                      .first %>
       <tr>
         <td><%= transaction.description %></td>
         <td><%= number_to_currency(transaction.amount) %></td>
         <td><%= transaction.category.name %></td>
         <td><%= transaction.recurring.titleize %></td>
         <td>
-          <% next_occurrence = transaction.children.where('expiration > ?', Time.current).order(expiration: :asc).first %>
           <%= next_occurrence&.expiration&.strftime('%B %d, %Y') || 'No future occurrences' %>
         </td>
-        <td>
-          <%= button_to 'Stop Recurring', transaction_path(transaction), method: :delete, data: { confirm: 'This will delete all future occurrences of this recurring transaction. Are you sure?' }, class: 'btn btn-danger btn-sm' %>
+        <td class="action-buttons">
+          <%= button_to 'Stop Recurring', stop_recurring_transaction_path(transaction), method: :patch, class: 'btn btn-warning btn-sm', data: {confirm: 'This will stop all future occurrences of this recurring transaction. Are you sure?' } %>
+          <%= button_to 'Delete All', transaction_path(transaction), method: :delete, class: 'btn btn-danger btn-sm', data: {confirm: 'This will delete this and all related recurring transactions. Are you sure?' } %>
         </td>
       </tr>
     <% end %>
     </tbody>
   </table>
 </div>
-

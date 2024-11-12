@@ -2,7 +2,7 @@
 
 <p><strong>Description:</strong> <%= @transaction.description %></p>
 <p><strong>Amount:</strong> <%= br_currency(@transaction.amount) %></p>
-<p><strong>Category:</strong> <%= @transaction.category %></p>
+<p><strong>Category:</strong> <%= @transaction.category.name %></p>
 <p><strong>Date:</strong> <%= @transaction.created_at&.strftime('%B %d, %Y') || "Date not available" %></p>
 
 <%= link_to 'Edit', edit_transaction_path(@transaction), class: 'btn btn-warning' %> |

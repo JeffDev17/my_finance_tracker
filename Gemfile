@@ -66,3 +66,7 @@ gem 'nokogiri'
 
 gem 'caxlsx'
 gem 'caxlsx_rails'
+gem 'roo'
+gem "sidekiq", "~> 7.3"
+gem 'whenever', require: false
+

@@ -13,15 +13,14 @@ class Transaction < ApplicationRecord
   after_destroy :update_account_balance
   after_update :update_account_balance
 
+  def stop_recurring_chain
+      update!(recurring: "no")
+      future_children = children.where('expiration > ?', Date.current)
+      future_children.destroy_all
+  end
   def destroy_recurring_chain
-    if parent_transaction_id.present?
-      #essa transaçao tem pai? Se sim, procura mais transaction com mesmo parent e data futura para deletar
-      Transaction.where(parent_transaction_id: parent_transaction_id).where('expiration >= ?', expiration).destroy_all
-    else
-      #Se ela nao tiver pai, significa que é uma transaction PAI e dai destroi todos os filhos e ela
-      children.destroy_all
-      destroy
-    end
+    children.destroy_all
+    destroy
   end
 
   private
@@ -35,12 +34,8 @@ class Transaction < ApplicationRecord
   def update_account_balance
     return if skip_callbacks
 
-    total_income = account.transactions.joins(:category)
-                          .where(categories: { category_type: 'income' })
-                          .sum(:amount)
-    total_expenses = account.transactions.joins(:category)
-                            .where(categories: { category_type: 'expense' })
-                            .sum(:amount)
+    total_income = account.transactions.joins(:category).where(categories: { category_type: 'income' }).sum(:amount)
+    total_expenses = account.transactions.joins(:category).where(categories: { category_type: 'expense' }).sum(:amount)
     account.update(balance: total_income - total_expenses)
   end
 
@@ -66,7 +61,7 @@ class Transaction < ApplicationRecord
         amount: amount,
         installment: installment,
         installment_number: number,
-        expiration: expiration + (number - 1).months,
+        expiration: (expiration || Date.today) + (number - 1).months,
         category_id: category_id,
         description: description,
         recurring: recurring,
