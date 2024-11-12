@@ -11,7 +11,7 @@
         <th>Description</th>
         <th>Category</th>
         <th>Type</th>
-        <th>Recurring</th> <!-- New column for Recurring -->
+        <th>Recurring</th>
         <th>Amount</th>
       </tr>
       </thead>
@@ -20,30 +20,21 @@
       <% transactions.each do |transaction| %>
         <tr>
           <td><%= transaction.expiration.strftime('%d/%m/%Y') %></td>
-          <td><%= if transaction.parent_transaction.present?
-                    transaction.description = transaction.description
-                  else
-                    installment_description(transaction)
-                  end
-          %></td>
+          <td>
+            <%= transaction.parent_transaction.present? ?
+                  transaction.description :
+                  installment_description(transaction) %>
+          </td>
           <td><%= transaction.category.name %></td>
           <td class="<%= transaction.category.category_type == 'expense' ? 'expense' : 'income' %>">
             <%= transaction.category.category_type.capitalize %>
           </td>
-          <td>
-            <%= transaction.recurring.capitalize %>
-          </td>
+          <td><%= transaction.recurring.capitalize %></td>
           <td class="<%= transaction.category.category_type == 'expense' ? 'expense' : 'income' %>">
             <%= br_currency(transaction.amount) %>
           </td>
         </tr>
-        <%
-          if transaction.category.category_type == 'expense'
-            total_for_month -= transaction.amount
-          else
-            total_for_month += transaction.amount
-          end
-        %>
+        <% total_for_month += (transaction.category.category_type == 'expense' ? -transaction.amount : transaction.amount) %>
       <% end %>
       </tbody>
       <tfoot>

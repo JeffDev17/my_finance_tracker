@@ -15,7 +15,7 @@
       <div class="card">
         <div class="card-body">
           <h2 class="card-title">Total Income</h2>
-          <div class="balance-display income"><%= br_currency(@total_income) %></div>
+          <div class="balance-display income"><%= br_currency(@total_income || 0) %></div>
         </div>
       </div>
     </div>
