@@ -12,6 +12,7 @@ class TransactionImport
         account: user.account,
         expiration: spreadsheet.cell(linha, 7) || Date.today,
         issue_date: spreadsheet.cell(linha, 8) || Date.today,
+        status: spreadsheet.cell(linha,9)
       }
 
       Transaction.create(transaction_data)

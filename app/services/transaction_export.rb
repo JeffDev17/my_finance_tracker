@@ -31,6 +31,7 @@ class TransactionExport
                           transaction.amount,
                           transaction.installment_number,
                           transaction.recurring,
+                          transaction.status,
                           user.account.name,
                           format_date(transaction.expiration),
                           format_date(transaction.issue_date),

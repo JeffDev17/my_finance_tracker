@@ -28,7 +28,7 @@ class TransactionsController < ApplicationController
 
   def update
     if @transaction.update(transaction_params)
-      redirect_to @transaction, notice: 'Transaction was successfully updated.'
+      redirect_to @transaction, notice: 'Transaction updated successfully.'
     else
       render :edit
     end
@@ -101,7 +101,8 @@ class TransactionsController < ApplicationController
       :installment_number,
       :recurring,
       :expiration,
-      :issue_date
+      :issue_date,
+      :status
     ).merge(account: current_user.account)
   end
 
