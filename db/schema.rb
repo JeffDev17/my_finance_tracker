@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_25_155931) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_25_180309) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -43,6 +43,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_25_155931) do
     t.string "recurring"
     t.date "issue_date"
     t.integer "parent_transaction_id"
+    t.string "status", default: "pending"
     t.index ["account_id"], name: "index_transactions_on_account_id"
     t.index ["category_id"], name: "index_transactions_on_category_id"
     t.index ["expiration"], name: "index_transactions_on_expiration"

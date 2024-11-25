@@ -21,7 +21,8 @@
       <th>Parcela No</th>
       <th>Category</th>
       <th>Due date</th>
-      <th>Actions</th>
+      <th>Status</th>
+      <th style="text-align: center">Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -37,7 +38,8 @@
         <td><%= transaction.installment_number %></td>
         <td><%= transaction.category.name %></td>
         <td><%= transaction.expiration %></td>
-        <td class="action-buttons">
+        <td><%= transaction.status.humanize %></td>
+        <td style="text-align: center" class="action-buttons">
           <%= link_to 'Show', transaction, class: 'btn btn-sm btn-info' %>
           <%= link_to 'Edit', edit_transaction_path(transaction), class: 'btn btn-sm btn-warning' %>
           <%= button_to 'Delete', transaction_path(transaction), method: :delete, class: 'btn btn-sm btn-danger', form: { style: 'display:inline-block;' }, data: { turbo_confirm: 'Are you sure?' } %>

@@ -5,10 +5,12 @@ class Transaction < ApplicationRecord
   has_many :children, class_name: "Transaction", foreign_key: "parent_transaction_id", dependent: :destroy
 
   enum recurring: { no: 'no', daily: 'daily', weekly: 'weekly', monthly: 'monthly', yearly: 'yearly' }
+  enum status: { pending: 'pending', completed: 'completed', failed: 'failed', overdue: 'overdue', refunded: 'refunded' }
 
   attr_accessor :skip_callbacks
 
   before_create :prepare_first_installment
+  before_save :mark_as_overdue, if: -> { expiration.present? && expiration < Date.today && status == 'pending' }
   after_create :handle_post_creation
   after_destroy :update_account_balance
   after_update :update_account_balance
@@ -25,6 +27,9 @@ class Transaction < ApplicationRecord
 
   private
 
+  def mark_as_overdue
+    self.status = 'overdue'
+  end
   def handle_post_creation
     return if skip_callbacks
     create_subsequent_installments
