@@ -60,7 +60,7 @@ end
 
 gem "devise", "~> 4.9"
 
-gem "rails_admin", "~> 3.2"
+gem "rails_admin", "~> 3.3"
 gem "sassc-rails"
 gem 'nokogiri'
 
