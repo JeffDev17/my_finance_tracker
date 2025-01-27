@@ -3,6 +3,7 @@ class Transaction < ApplicationRecord
   belongs_to :category
   belongs_to :parent_transaction, class_name: 'Transaction', optional: true
   has_many :children, class_name: "Transaction", foreign_key: "parent_transaction_id", dependent: :destroy
+  has_one_attached :receipt
 
   enum recurring: { no: 'no', daily: 'daily', weekly: 'weekly', monthly: 'monthly', yearly: 'yearly' }
   enum status: { pending: 'pending', completed: 'completed', failed: 'failed', overdue: 'overdue', refunded: 'refunded' }
@@ -13,8 +14,11 @@ class Transaction < ApplicationRecord
   before_save :mark_as_overdue, if: -> { expiration.present? && expiration < Date.today && status == 'pending' }
   after_create :handle_post_creation
   after_destroy :update_account_balance
-  after_update :update_account_balance
+  #before_update :sub_account_balance, if: -> { will_save_change_to_amount? }
+  after_update :update_account_balance, if: -> { saved_change_to_amount? }
 
+
+  # Collon : // Semi-collon ; // comma ,
   def stop_recurring_chain
       update!(recurring: "no")
       future_children = children.where('expiration > ?', Date.current)
@@ -37,11 +41,20 @@ class Transaction < ApplicationRecord
   end
 
   def update_account_balance
-    return if skip_callbacks
+    multiplier = category.category_type == 'expense' ? -1 : 1
 
-    total_income = account.transactions.joins(:category).where(categories: { category_type: 'income' }).sum(:amount)
-    total_expenses = account.transactions.joins(:category).where(categories: { category_type: 'expense' }).sum(:amount)
-    account.update(balance: total_income - total_expenses)
+    if destroyed? || marked_for_destruction?
+      # Handle deletion case
+      balance_change = amount * -multiplier  # Reverse the effect
+    else
+      # Handle creation and update cases
+      old_amount = amount_previously_was || 0
+      new_amount = amount || 0
+      balance_change = (new_amount - old_amount) * multiplier
+    end
+
+    new_balance = account.balance + balance_change
+    account.update_columns(balance: new_balance)
   end
 
   def prepare_first_installment

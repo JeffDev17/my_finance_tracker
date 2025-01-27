@@ -102,7 +102,8 @@ class TransactionsController < ApplicationController
       :recurring,
       :expiration,
       :issue_date,
-      :status
+      :status,
+      :receipt
     ).merge(account: current_user.account)
   end
 

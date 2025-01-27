@@ -23,6 +23,7 @@
       <th>Due date</th>
       <th>Status</th>
       <th style="text-align: center">Actions</th>
+      <th>Receipt</th>
     </tr>
     </thead>
     <tbody>
@@ -43,6 +44,13 @@
           <%= link_to 'Show', transaction, class: 'btn btn-sm btn-info' %>
           <%= link_to 'Edit', edit_transaction_path(transaction), class: 'btn btn-sm btn-warning' %>
           <%= button_to 'Delete', transaction_path(transaction), method: :delete, class: 'btn btn-sm btn-danger', form: { style: 'display:inline-block;' }, data: { turbo_confirm: 'Are you sure?' } %>
+        </td>
+        <td>
+          <% if transaction.receipt.attached? %>
+            <%= link_to 'Download', rails_blob_path(transaction.receipt, disposition: "attachment"), class: "btn btn-sm btn-primary" %>
+          <% else %>
+            No Receipt
+          <% end %>
         </td>
       </tr>
     <% end %>

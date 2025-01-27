@@ -22,19 +22,20 @@ class TransactionExport
   def self.export_to_excel(transactions, user)
     package = Axlsx::Package.new do |table|
       table.workbook.add_worksheet(name: "Transactions") do |sheet|
-        sheet.add_row ["Description", "Category", "Amount", "Installment", "Recurring", "Account", "Expiration Date", "Issue Date", "User"]
+        sheet.add_row ["Description", "Category", "Amount", "Total Installments", "Installment No", "Recurring", "Account", "Expiration Date", "Issue Date", "Status", "User"]
 
         transactions.each do |transaction|
           sheet.add_row [
                           transaction.description,
                           transaction.category.name,
                           transaction.amount,
+                          transaction.installment,
                           transaction.installment_number,
                           transaction.recurring,
-                          transaction.status,
                           user.account.name,
                           format_date(transaction.expiration),
                           format_date(transaction.issue_date),
+                          transaction.status.humanize,
                           user.email
                         ]
         end
